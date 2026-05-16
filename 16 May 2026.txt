@@ -1,0 +1,6 @@
+show databases;
+create database VITCampus;
+use VITCampus;
+create table CSE(ID int,Name varchar(50),Age int);
+insert into CSE values(100,'Rahul',25),(101,'Vinay',22),(102,'Ajay',20),(103,'Subham',24),(105,'Saurabh',29);
+select * from CSE;
