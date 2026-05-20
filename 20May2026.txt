@@ -1,0 +1,36 @@
+use job;
+CREATE TABLE Persons (
+    ID int NOT NULL,
+    LastName varchar(255) unique not null,
+    FirstName varchar(255) NOT NULL,
+    Age int
+);
+desc persons;
+insert into persons values (101, 'v' , 'jayant' , null);
+insert into persons values (102 ,'shubha,', 'kumar', 25);
+select * from persons;
+alter table persons 
+add unique (age);
+ALTER TABLE Persons
+DROP CONSTRAINT age;
+ALTER TABLE Persons	
+ADD CHECK (Age>=18);
+insert into persons values (107, 'sushant', 'singh', 17);
+create table product(pid int primary key,pname varchar(50),prefNo int not null unique);
+desc product;
+insert into product values(101,'electronics',19930);
+select * from product;
+alter table person add primary key(id);
+alter table person drop primary key;
+select * from category;
+drop table products;
+CREATE TABLE products (
+    pid int primary key,
+    pname varchar(100) NOT NULL,
+    cid int, 
+    FOREIGN KEY (cid) REFERENCES category(cid)
+);
+desc products;
+delete from category where cid=101;
+insert into products values (504,'Power Bank Samsung',64-bit encry key);
+select * from products;
