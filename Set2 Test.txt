@@ -1,0 +1,72 @@
+Q1)List the Employee Name, their Department Name, and the Location Name for all employees. 
+
+Ans:select e.employee_name,d.dept_name,d.location_id from employees e join departments d on e.dept_id = d.dept_id;
+
+Q2)Retrieve the Project Name, Client Name, and the Total Hours Worked on that project, but only for projects managed by the 'Consulting' department. 
+
+Ans:select p.project_name,p.client_name,sum(a.hours_worked) as total_hours from projects p join assignments a on p.project_id = a.project_id
+join departments d on p.dept_id = d.dept_id where d.dept_name = 'consulting' group by p.project_name, p.client_name;
+
+Q3)Find the names of Employees who have worked on a project with Client Name 'GlobalTech Solutions'. List the Employee Name and Project Name.
+ 
+Ans:select e.employee_name,p.project_name from employees e join assignments a on e.employee_id = a.employee_id join projects p on a.project_id = p.project_id
+where p.client_name = 'globaltech solutions';
+Q4)List all Departments that have no Employees currently assigned to them. 
+
+Ans:select d.dept_name from departments d left join employees e on d.dept_id = e.dept_id where e.employee_id is null;
+
+Q5)Show the Manager Name, the Department Name they manage, and the total number of direct reports they have. 
+
+Ans:select m.employee_name as manager_name,d.dept_name,count(e.employee_id) as total_reports from employees e join employees m
+on e.manager_id = m.employee_id join departments d on m.dept_id = d.dept_id group by m.employee_name, d.dept_name;
+
+Q6)Calculate the Average Hours Worked per Employee across all projects. List the Employee Name and the average hours.
+ 
+Ans:select e.employee_name,avg(a.hours_worked) as avg_hours from employees e join assignments a on e.employee_id = a.employee_id group by e.employee_name;
+
+Q7)Find the Department Name(s) that have an average salary above the company-wide average salary.
+ 
+Ans:select d.dept_name from employees e join departments d on e.dept_id = d.dept_id group by d.dept_name having avg(e.salary) >(select avg(salary)from employees);
+
+Q8)Identify the Client Name(s) whose projects have a total combined hours worked exceeding 500 hours. 
+
+Ans:select p.client_name,sum(a.hours_worked) as total_hours from projects p join assignments a on p.project_id = a.project_id group by p.client_name
+having sum(a.hours_worked) > 500;
+
+Q9)For each Location, find the Department Name with the highest count of employees. 
+
+Ans:select location_id,dept_name,emp_count from(select d.location_id,d.dept_name,count(e.employee_id) as emp_count,rank() over(partition by d.location_id order by count(e.employee_id) desc) as rnk from departments d left join employees e on d.dept_id = e.dept_id group by d.location_id, d.dept_name
+) x where rnk = 1;
+
+Q10)Calculate the total number of employees assigned to each Project, but only include projects that have more than 5 employees assigned.
+ 
+Ans:select p.project_name,count(distinct a.employee_id) as total_employees from projects p join assignments a on p.project_id = a.project_id group by p.project_name having count(distinct a.employee_id) > 5;
+
+Q11)Find the Employee Name(s) who work on ALL projects managed by the 'R&D' department. 
+
+Ans:select e.employee_name from employees e join assignments a on e.employee_id = a.employee_id join projects p on a.project_id = p.project_id
+join departments d on p.dept_id = d.dept_id where d.dept_name = 'r&d' group by e.employee_name having count(distinct p.project_id) =(select count(*)
+from projects p join departments d on p.dept_id = d.dept_id where d.dept_name = 'r&d');
+
+Q12)Retrieve the Department Name(s) that have employees assigned to more than one project.
+ 
+Ans:select distinct d.dept_name from departments d join employees e on d.dept_id = e.dept_id join assignments a on e.employee_id = a.employee_id
+group by d.dept_name, e.employee_id having count(distinct a.project_id) > 1;
+
+Q13)Write a query to list the Employee Name and Project Name for any employee who has worked less than 10 hours on a project. 
+
+Ans:select e.employee_name,p.project_name from employees e join assignments a on e.employee_id = a.employee_id join projects p on a.project_id = p.project_id
+where a.hours_worked < 10;
+
+Q14)Find the Project Name(s) that have no assigned employees.
+ 
+Ans:select p.project_name from projects p left join assignments a on p.project_id = a.project_id where a.assignment_id is null;
+
+Q15)Select the Employee Name(s) whose salary is greater than the maximum salary in their own department. 
+
+Ans:select employee_name from employees e where salary >(select max(salary) from employees where dept_id = e.dept_id);
+
+Q16)Assuming the Assignments table has a start_date column, find the Employee Name and their oldest project start date.
+ 
+Ans:select e.employee_name,min(a.start_date) as oldest_project_date from employees e join assignments a on e.employee_id = a.employee_id
+group by e.employee_name;
